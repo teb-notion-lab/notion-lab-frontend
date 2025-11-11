@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 const API = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const api = axios.create({
-    baseURL: API,
+    baseURL: '/api', //changed from API
     headers: { "Content-Type": "application/json" },
 });
 
