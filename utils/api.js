@@ -1,10 +1,10 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-//const API = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API = '/api' // process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const api = axios.create({
-    baseURL: '/api', //changed from API
+    baseURL: API, //changed from API
     headers: { "Content-Type": "application/json" },
 });
 
@@ -42,7 +42,7 @@ export const getTasks = (token, projectId) =>
     });
 
 export const createTask = async (token, data) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/tasks/`, {
+    const res = await fetch(`${API}/tasks/`, {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${token}`,
@@ -60,7 +60,7 @@ export const createTask = async (token, data) => {
 }
 
 export async function updateTask(token, id, data) {
-    const res = await fetch(`http://localhost:8000/api/tasks/${id}/`, {
+    const res = await fetch(`${API}/tasks/${id}/`, {
         method: 'PATCH',
         headers: {
             Authorization: `Bearer ${token}`,
