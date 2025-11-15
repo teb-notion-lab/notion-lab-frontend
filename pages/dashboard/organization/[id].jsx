@@ -46,6 +46,7 @@ export default function OrganizationDashboard({ orgId, orgName }) {
             console.error('Failed to create project:', err)
             console.error('Error creating project:', token)
             alert('❌ Failed to create project')
+            console.log(orgId)
         }
     }
 
