@@ -8,25 +8,19 @@ import SnapshotCard from '@/components/SnapshotCard'
 import ProgressCharts from '@/components/ProgressCharts'
 import ProjectListSidebar from '@/components/ProjectListSidebar'
 import ProjectModal from '@/components/ProjectModal'
-import { useRouter } from 'next/router'
+import { useParams } from 'next/navigation'
 
 export default function OrganizationDashboard({ orgName }) {
-    const router = useRouter()
-    const { id } = router.query
-
+    const { id } = useParams()        // ✅ correct way to get :id in App Router
     const [orgId, setOrgId] = useState(null)
     const [projects, setProjects] = useState([])
     const [projectModalOpen, setProjectModalOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    // Set orgId when router is ready
     useEffect(() => {
-        if (id) {
-            setOrgId(Number(id))
-        }
+        if (id) setOrgId(Number(id))
     }, [id])
 
-    // Fetch projects for this organization
     useEffect(() => {
         const token = Cookies.get('nl_token')
         if (!token || !orgId) return
@@ -35,7 +29,7 @@ export default function OrganizationDashboard({ orgName }) {
             try {
                 setLoading(true)
                 const res = await getProjects(token)
-                const filtered = res.filter((p) => p.organization === orgId)
+                const filtered = res.filter(p => p.organization === orgId)
                 setProjects(filtered)
             } catch (err) {
                 console.error('Error fetching projects:', err)
@@ -47,17 +41,19 @@ export default function OrganizationDashboard({ orgName }) {
         fetchProjects()
     }, [orgId])
 
-    // Create project handler
     const handleCreateProject = async (data) => {
         const token = Cookies.get('nl_token')
 
-        try {
-            const res = await createProject(token, {
-                ...data,
-                organization: orgId
-            })
+        const payload = {
+            ...data,
+            organization: orgId   // <--- this is now guaranteed correct
+        }
 
-            setProjects((prev) => [...prev, res])
+        console.log("Sending project:", payload)
+
+        try {
+            const res = await createProject(token, payload)
+            setProjects(prev => [...prev, res])
             setProjectModalOpen(false)
         } catch (err) {
             console.error('Failed to create project:', err)
