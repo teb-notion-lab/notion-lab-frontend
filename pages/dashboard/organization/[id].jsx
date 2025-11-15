@@ -48,7 +48,7 @@ export default function OrganizationDashboard({ orgId, orgName }) {
         } catch (err) {
             console.error('Failed to create project:', err)
             console.error('Error creating project:', orgId == null)
-            console.log(orgId)
+            console.log(router.querry)
             alert('❌ Failed create project')
         }
     }
