@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
 import Cookies from 'js-cookie'
 import { getProjects, createProject } from '@/utils/api'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
@@ -10,14 +9,15 @@ import { useRouter } from 'next/router'
 
 export default function OrganizationProjectsPage() {
     const router = useRouter()
-    const params = useParams()
-    const orgId = Number(router.query?.id)
+    const { id } = router.query
     const [projects, setProjects] = useState([])
     const [open, setOpen] = useState(false)
+    if(!id) return null
+    const orgId = Number(id)
 
     useEffect(() => {
         const token = Cookies.get('nl_token')
-        if (!token || !orgId) return
+        if (!token) return
 
         const fetchProjects = async () => {
             try {
