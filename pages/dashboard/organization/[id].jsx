@@ -22,7 +22,7 @@ export default function OrganizationDashboard({ orgId, orgName }) {
         const token = Cookies.get('nl_token')
         if (!token || !orgId) return
 
-        orgId = id
+        orgId = Number(id)
 
         const fetchProjects = async () => {
             try {
@@ -49,7 +49,7 @@ export default function OrganizationDashboard({ orgId, orgName }) {
             setProjectModalOpen(false)
         } catch (err) {
             console.error('Failed to create project:', err)
-            console.error('Error creating project:',)
+            console.error('Error creating project:', orgId)
             alert('❌ Failed create project')
         }
     }
