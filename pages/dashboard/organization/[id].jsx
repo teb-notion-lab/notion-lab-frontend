@@ -8,12 +8,15 @@ import SnapshotCard from '@/components/SnapshotCard'
 import ProgressCharts from '@/components/ProgressCharts'
 import ProjectListSidebar from '@/components/ProjectListSidebar'
 import ProjectModal from '@/components/ProjectModal'
+import { useRouter } from 'next/router'
 
 export default function OrganizationDashboard({ orgId, orgName }) {
     const [projects, setProjects] = useState([])
     const [projectModalOpen, setProjectModalOpen] = useState(false)
     const [loading, setLoading] = useState(false)
+    const router = useRouter()
 
+    orgId = router.querry
     // 🔹 Fetch projects for this org
     useEffect(() => {
         const token = Cookies.get('nl_token')
