@@ -16,7 +16,7 @@ export default function OrganizationDashboard({ orgId, orgName }) {
     const [loading, setLoading] = useState(false)
     const router = useRouter()
 
-    orgId = router.querry
+    orgId = router.querry.id
     // 🔹 Fetch projects for this org
     useEffect(() => {
         const token = Cookies.get('nl_token')
