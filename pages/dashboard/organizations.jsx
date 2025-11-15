@@ -66,8 +66,14 @@ export default function OrganizationsPage() {
                     orgs.map((org) => (
                         <Card key={org.id}>
                             <CardHeader>
-                                <CardTitle>{org.name}</CardTitle>
+                                <CardTitle
+                                    className="cursor-pointer text-blue-600 hover:underline"
+                                    onClick={() => router.push(`/dashboard/organization/${org.id}`)}
+                                >
+                                    {org.name}
+                                </CardTitle>
                             </CardHeader>
+
                             <CardContent>
                                 <p className="mb-2">
                                     <strong>Owner:</strong> {org.owner?.name} {org.owner?.surname}
