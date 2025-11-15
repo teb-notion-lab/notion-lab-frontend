@@ -10,25 +10,32 @@ import ProjectListSidebar from '@/components/ProjectListSidebar'
 import ProjectModal from '@/components/ProjectModal'
 import { useRouter } from 'next/router'
 
-export default function OrganizationDashboard({ orgId, orgName }) {
-    const [projects, setProjects] = useState([])
-    const [projectModalOpen, setProjectModalOpen] = useState(false)
-    const [loading, setLoading] = useState(false)
+export default function OrganizationDashboard({ orgName }) {
     const router = useRouter()
     const { id } = router.query
 
-    // 🔹 Fetch projects for this org
+    const [orgId, setOrgId] = useState(null)
+    const [projects, setProjects] = useState([])
+    const [projectModalOpen, setProjectModalOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
+
+    // Set orgId when router is ready
+    useEffect(() => {
+        if (id) {
+            setOrgId(Number(id))
+        }
+    }, [id])
+
+    // Fetch projects for this organization
     useEffect(() => {
         const token = Cookies.get('nl_token')
         if (!token || !orgId) return
-
-        orgId = Number(id)
 
         const fetchProjects = async () => {
             try {
                 setLoading(true)
                 const res = await getProjects(token)
-                const filtered = res.filter((p) => p.organization === parseInt(orgId))
+                const filtered = res.filter((p) => p.organization === orgId)
                 setProjects(filtered)
             } catch (err) {
                 console.error('Error fetching projects:', err)
@@ -40,21 +47,24 @@ export default function OrganizationDashboard({ orgId, orgName }) {
         fetchProjects()
     }, [orgId])
 
-    // ⚡ Create project handler
+    // Create project handler
     const handleCreateProject = async (data) => {
         const token = Cookies.get('nl_token')
+
         try {
-            const res = await createProject(token, { ...data, organization: orgId })
-            setProjects((prev) => [...prev, res]) // add new project to list
+            const res = await createProject(token, {
+                ...data,
+                organization: orgId
+            })
+
+            setProjects((prev) => [...prev, res])
             setProjectModalOpen(false)
         } catch (err) {
             console.error('Failed to create project:', err)
-            console.error('Error creating project:', orgId)
-            alert('❌ Failed create project')
+            alert('❌ Failed to create project')
         }
     }
 
-    // 📊 Mock stats for visuals
     const stats = [
         { title: 'Projects', value: projects.length, color: 'bg-blue-500' },
         { title: 'Features', value: 10, color: 'bg-yellow-400' },
@@ -64,23 +74,19 @@ export default function OrganizationDashboard({ orgId, orgName }) {
 
     return (
         <div className="flex gap-6">
-            {/* Sidebar */}
             <ProjectListSidebar
                 orgName={orgName}
                 projects={projects}
                 onNewProject={() => setProjectModalOpen(true)}
             />
 
-            {/* Main content */}
             <div className="flex-1 space-y-8">
-                {/* Snapshot section */}
                 <div className="grid grid-cols-4 gap-4">
                     {stats.map((s, idx) => (
                         <SnapshotCard key={idx} {...s} />
                     ))}
                 </div>
 
-                {/* Progress section */}
                 <Card>
                     <CardContent className="p-6">
                         <h2 className="font-semibold text-lg mb-4">Progress</h2>
@@ -89,12 +95,11 @@ export default function OrganizationDashboard({ orgId, orgName }) {
                 </Card>
             </div>
 
-            {/* Project Modal */}
             <ProjectModal
                 open={projectModalOpen}
                 setOpen={setProjectModalOpen}
                 onSubmit={handleCreateProject}
-                organizations={[]} // no need to select org manually
+                organizations={[]}
             />
         </div>
     )
